@@ -62,7 +62,8 @@ namespace price_alert_v2
                 market = market,
                 threshold = double.Parse(args[2]),
                 maxDuration = TimeSpan.FromMinutes(double.Parse(Constants.MaxDuration)),
-                args = args
+                args = args,
+                phone = fromPhone
             });
             Alias alias = new Alias
             {
