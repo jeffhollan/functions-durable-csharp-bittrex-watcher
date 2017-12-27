@@ -21,10 +21,10 @@ namespace price_alert_v2
             double current = await context.CallActivityAsync<double>("watcher_getticker", input.market);
             DateTime maxTime = context.CurrentUtcDateTime.Add(input.maxDuration);
             while (current < input.threshold && context.CurrentUtcDateTime < maxTime) {
+                await context.CreateTimer(context.CurrentUtcDateTime.AddMinutes(double.Parse(Constants.DelayInterval)), CancellationToken.None);
                 log.Info("Getting ticker");
                 current = await context.CallActivityAsync<double>("watcher_getticker", input.market);
                 log.Info("Current price " + current);
-                await context.CreateTimer(context.CurrentUtcDateTime.AddMinutes(double.Parse(Constants.DelayInterval)), CancellationToken.None);
             }
             log.Info("Exited while loop");
             if(current < input.threshold)
