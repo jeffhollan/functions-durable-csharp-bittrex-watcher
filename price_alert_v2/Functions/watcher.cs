@@ -27,7 +27,7 @@ namespace price_alert_v2
                 log.Info("Current price " + current);
             }
             log.Info("Exited while loop");
-            if(current < input.threshold)
+            if(current >= input.threshold)
             {
                 await context.CallActivityAsync("send_event", new Message {
                     phone = input.phone,
