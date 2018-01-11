@@ -20,6 +20,7 @@ namespace price_alert_v2
             WatcherRequest input = context.GetInput<WatcherRequest>();
             double current = await context.CallActivityAsync<double>("watcher_getticker", input.market);
             DateTime maxTime = context.CurrentUtcDateTime.Add(input.maxDuration);
+
             while (current < input.threshold && context.CurrentUtcDateTime < maxTime) {
                 await context.CreateTimer(context.CurrentUtcDateTime.AddMinutes(double.Parse(Constants.DelayInterval)), CancellationToken.None);
                 log.Info("Getting ticker");
@@ -31,14 +32,14 @@ namespace price_alert_v2
             {
                 await context.CallActivityAsync("send_event", new Message {
                     phone = input.phone,
-                    text = "Crossed at " + context.CurrentUtcDateTime.ToString() + " with price " + current
+                    text = input.market + " crossed at " + context.CurrentUtcDateTime.ToString() + " with price " + current
                 });
             }
             else
             {
                 await context.CallActivityAsync("send_event", new Message {
                     phone = input.phone,
-                    text = "Timed out with price " + current
+                    text = input.market + " timed out with price " + current
                 });
             }
             
